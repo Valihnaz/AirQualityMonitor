@@ -16,10 +16,9 @@ Simple air quality monitoring system using ESP32, DHT22, and MQ2 sensor.
 
 ## How to run
 1. Open project in PlatformIO / Wokwi
-2. Set your Blynk credentials in secret.example.h
+2. Set your Blynk credentials in secret.h.example
 3. Build and upload
 
 ## TODO
-- Add FSM-based control
 - Integrate FreeRTOS
 - Persistent storage
