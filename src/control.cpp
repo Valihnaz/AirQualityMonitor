@@ -2,6 +2,7 @@
 #include "config.h"
 #include "sensors.h"
 #include <Arduino.h>
+#include "fsm.h"
 
 // Control states
 bool autoMode        = true;
@@ -45,27 +46,41 @@ void updateStatus() {
 }
 
 // Apply control actions to actuators
-void applyControl() {
-    if (autoMode) {
-        digitalWrite(AUTO_LED, HIGH);
+void applyControl(SystemState_t state) {
 
-        // Heater control
-        if (!heaterState && temperature < TEMP_MIN) heaterState = true;
-        if (heaterState  && temperature > TEMP_MAX) heaterState = false;
+    switch (state) {
 
-        // Humidifier control
-        if (!humidifierState && humidity < HUM_MIN) humidifierState = true;
-        if (humidifierState  && humidity > HUM_MAX) humidifierState = false;
+        case STATE_OFF:
+            heaterState = false;
+            humidifierState = false;
+            fanState = false;
+            digitalWrite(AUTO_LED, LOW);
+            break;
 
-        // Fan control
-        if (!fanState && gasPPM > GAS_THRESHOLD) fanState = true;
-        if (fanState  && gasPPM < GAS_THRESHOLD) fanState = false;
+        case STATE_MANUAL:
+            // No changes made here — simply applying values from the UI
+            digitalWrite(AUTO_LED, LOW);
+            break;
 
-    } else {
-        digitalWrite(AUTO_LED, LOW); // Manual mode
+        case STATE_AUTO:
+            digitalWrite(AUTO_LED, HIGH);
+
+            // Heater
+            if (!heaterState && temperature < TEMP_MIN) heaterState = true;
+            if (heaterState  && temperature > TEMP_MAX) heaterState = false;
+
+            // Humidifier
+            if (!humidifierState && humidity < HUM_MIN) humidifierState = true;
+            if (humidifierState  && humidity > HUM_MAX) humidifierState = false;
+
+            // Fan
+            if (!fanState && gasPPM > GAS_THRESHOLD) fanState = true;
+            if (fanState  && gasPPM < GAS_THRESHOLD) fanState = false;
+
+            break;
     }
 
-    // Apply output states to pins
+    // Apply states to pins
     digitalWrite(HEATER_PIN,     heaterState);
     digitalWrite(HUMIDIFIER_PIN, humidifierState);
     digitalWrite(FAN_PIN,        fanState);

@@ -23,25 +23,6 @@ void loop() {
     // Run Blynk client and timer
     blynkRun();
     blynkTimerRun();
-
-    // Do nothing until connected to Blynk
-    if (!isConnected) return;
-
-    // Read sensors
-    readSensors();
-
-    // Update historical data buffer
-    updateHistory(temperature, humidity, gasPPM);
-
-    // Update system status and control actuators
-    updateStatus();
-    applyControl();
-
-    // Sync actuators state with Blynk app
-    syncActuators();
-
-    // Wait 2 seconds before next iteration
-    delay(2000);
 }
 
 

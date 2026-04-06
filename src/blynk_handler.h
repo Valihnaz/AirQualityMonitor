@@ -1,5 +1,5 @@
 #pragma once
-
+#include <Arduino.h>
 // Blynk connection status flag
 extern bool isConnected;
 
@@ -15,5 +15,9 @@ void blynkTimerRun();
 // Send sensor data and statistics to Blynk
 void sendData();
 
+void mainCycle();
+
 // Sync actuator states (heater, fan, humidifier) to Blynk
 void syncActuators();
+
+void blynkWriteStatus(const String& msg);

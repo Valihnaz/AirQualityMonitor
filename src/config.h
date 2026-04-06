@@ -1,6 +1,6 @@
 #pragma once
 
-#include <secrets.h>
+#include "secrets.h"
 
 // Hardware pins
 #define DHT_PIN        15
